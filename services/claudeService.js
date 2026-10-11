@@ -24,7 +24,11 @@ const projectRoot = path.resolve(
 
 const transport = new StdioClientTransport({
   command: process.execPath,
-  args: [path.join(projectRoot, "server.js")]
+  args: [path.join(projectRoot, "server.js")],
+  env: {
+    ...process.env,
+    DB_HOST: process.env.DB_HOST || "127.0.0.1"
+  }
 });
 
 let claudeTools = [];
