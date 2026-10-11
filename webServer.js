@@ -63,8 +63,16 @@ async function startServer() {
 startServer();
 
 async function shutdown() {
-  httpServer.close();
-  await disconnectMcp();
+  try {
+    if (httpServer) {
+      httpServer.close();
+    }
+
+    await disconnectMcp();
+  } catch (error) {
+    console.error("Shutdown error:", error);
+  }
+
   process.exit(0);
 }
 

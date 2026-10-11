@@ -87,6 +87,8 @@ export async function askClaude(question) {
           arguments: block.input
         });
 
+        console.log("MCP TOOL RESULT:", JSON.stringify(result, null, 2));
+
         toolResults.push({
           type: "tool_result",
           tool_use_id: block.id,
