@@ -9,7 +9,7 @@ import {
 } from "./services/claudeService.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -45,11 +45,22 @@ app.post("/api/chat", async (req, res) => {
 });
 
 // Connect MCP before starting Express
-await connectMcp();
+let httpServer;
 
-const httpServer = app.listen(PORT, () => {
-  console.log(`Application running at http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectMcp();
+
+    httpServer = app.listen(PORT, () => {
+      console.log(`Application running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Application startup failed:", error);
+    process.exitCode = 1;
+  }
+}
+
+startServer();
 
 async function shutdown() {
   httpServer.close();
