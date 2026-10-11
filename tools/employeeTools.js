@@ -17,21 +17,33 @@ export async function getEmployeeDetails(employeeId) {
 }
 
 export async function listEmployees(department) {
-  let query = `
-    SELECT id, name, department, designation
-    FROM employees
-  `;
+  try {
+    let query = `
+      SELECT id, name, department, designation
+      FROM employees
+    `;
 
-  const params = [];
+    const params = [];
 
-  if (department) {
-    query += " WHERE department = ?";
-    params.push(department);
+    if (department) {
+      query += " WHERE department = ?";
+      params.push(department);
+    }
+
+    const [rows] = await db.execute(query, params);
+
+    return rows;
+
+  } catch (error) {
+    console.error("MYSQL ERROR in listEmployees:", {
+      code: error.code,
+      message: error.message,
+      errno: error.errno,
+      sqlState: error.sqlState
+    });
+
+    throw error;
   }
-
-  const [rows] = await db.execute(query, params);
-
-  return rows;
 }
 
 export async function countEmployeesByDepartment(department) {
